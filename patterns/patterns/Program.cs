@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 
 namespace patterns {
     public class Client {
@@ -41,7 +43,8 @@ namespace patterns {
                 }
             }
         }
-
+        
+        //factory 3
         public void Type(Factory factory) => factory.Type();
         public IProduct ProduceShoe(Factory factory) => factory.ProduceShoe();
         public void showInfo(IProduct product) => product.showInfo();
@@ -60,12 +63,73 @@ namespace patterns {
             trainers.Repair();
             trainers.showInfo();
         }
+        
+        //state 4
+        public static void clientCodeState() {
+            var game = new MilitaryContext(new Private());
+            while (true) {
+                Console.WriteLine("Choose an operation:");
+                Console.WriteLine("1. Show chevron\n2. Promote\n3. Demote\n4. Exit");
+                string choice = Console.ReadLine();
+                switch (choice) {
+                    case "1":
+                        game.ShowChevron();
+                        break;
+                    case "2":
+                        if (game.Order < 6)
+                            game.TransitionTo(game.Order + 1);
+                        else
+                            Console.WriteLine("Cannot promote a general!");
+                        break;
+                    case "3":
+                        if (game.Order > 1)
+                            game.TransitionTo(game.Order - 1);
+                        else
+                            Console.WriteLine("Cannot demote a private!");
+                        break;
+                    case "4":
+                        Console.WriteLine("Exiting!");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid operation code!");
+                        break;
+                }
+            }
+        }
+
+        public AbstractHandler formChain() {
+            AbstractHandler wife = new WifeHandler();
+            wife.SetNext(new HusbandHandler()).SetNext(new SonHandler()).SetNext(new DaughterHandler());
+            return wife;
+        }
+        public void buyBread(AbstractHandler handler, int chainLength) {
+            for(int i = 0; i < chainLength; i++) {
+                Console.WriteLine($"Client: Who is buying bread today?");
+                var result = handler.HandleBread();
+                if (result != null) {
+                    Console.Write($"   {result}");
+                    break;
+                }
+                else {
+                    Console.WriteLine($"   Somebody else is buying bread.");
+                    break;
+                }
+            }
+        }
+        public static void clientCodeChain() {
+            Client client = new Client();
+            client.buyBread(client.formChain(), 4);
+        }
+        
     }
     
     class Program {
         static void Main(string[] args) {
             //Client.clientCodeProxy();
             //Client.clientCodeFactory();
+            //Client.clientCodeState();
+            // Client.clientCodeChain();
+            Client.clientCodeChain();
         }
     }
 }

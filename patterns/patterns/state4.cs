@@ -2,87 +2,83 @@
 
 namespace patterns
 {
-    // Контекст определяет интерфейс, представляющий интерес для клиентов. Он
-    // также хранит ссылку на экземпляр подкласса Состояния, который отображает
-    // текущее состояние Контекста.
-    class Context
-    {
-        // Ссылка на текущее состояние Контекста.
-        private State _state = null;
+    class MilitaryContext {
+        private Position _state = null;
 
-        public Context(State state)
-        {
-            this.TransitionTo(state);
+        public MilitaryContext(Position state) => TransitionTo(state);
+ 
+        public int Order => _state.Order;
+        
+        public void TransitionTo(Position state) {
+            Console.WriteLine($"MilitaryContext: Transition to {state.GetType().Name}.\n");
+            _state = state;
+            _state.SetContext(this);
+        }
+        
+        public void TransitionTo(int order) {
+            Console.WriteLine($"MilitaryContext: Transition to position in order {order}.\n");
+            switch (order) {
+                case 1:
+                    _state = new Private();
+                    break;
+                case 2:
+                    _state = new Sergeant();
+                    break;
+                case 3:
+                    _state = new Lieutenant();
+                    break;
+                case 4:
+                    _state = new Major();
+                    break;
+                case 5:
+                    _state = new Colonel();
+                    break;
+                case 6:
+                    _state = new General();
+                    break;
+            }
+            _state.SetContext(this);
         }
 
-        // Контекст позволяет изменять объект Состояния во время выполнения.
-        public void TransitionTo(State state)
-        {
-            Console.WriteLine($"Context: Transition to {state.GetType().Name}.");
-            this._state = state;
-            this._state.SetContext(this);
-        }
+        public void ShowChevron() => _state.HandleChevron();
+    }
 
-        // Контекст делегирует часть своего поведения текущему объекту
-        // Состояния.
-        public void Request1()
-        {
-            this._state.Handle1();
-        }
+    abstract class Position {
+        protected MilitaryContext _context;
+        protected int order;
+        public int Order => order;
 
-        public void Request2()
-        {
-            this._state.Handle2();
-        }
+        public void SetContext(MilitaryContext MilitaryContext) => _context = MilitaryContext;
+        public abstract void HandleChevron();
     }
     
-    // Базовый класс Состояния объявляет методы, которые должны реализовать все
-    // Конкретные Состояния, а также предоставляет обратную ссылку на объект
-    // Контекст, связанный с Состоянием. Эта обратная ссылка может
-    // использоваться Состояниями для передачи Контекста другому Состоянию.
-    abstract class State
-    {
-        protected Context _context;
-
-        public void SetContext(Context context)
-        {
-            this._context = context;
-        }
-
-        public abstract void Handle1();
-
-        public abstract void Handle2();
+    class Private: Position {
+        public Private() => order = 1;
+        public override void HandleChevron() => Console.WriteLine("Handling private chevron: <o|    |\n");
     }
 
-    // Конкретные Состояния реализуют различные модели поведения, связанные с
-    // состоянием Контекста.
-    class ConcreteStateA : State
-    {
-        public override void Handle1()
-        {
-            Console.WriteLine("ConcreteStateA handles request1.");
-            Console.WriteLine("ConcreteStateA wants to change the state of the context.");
-            this._context.TransitionTo(new ConcreteStateB());
-        }
-
-        public override void Handle2()
-        {
-            Console.WriteLine("ConcreteStateA handles request2.");
-        }
+    class Sergeant: Position {
+        public Sergeant() => order = 2;
+        public override void HandleChevron() => Console.WriteLine("Handling sergeant chevron: <o| <<<|\n");
     }
-
-    class ConcreteStateB : State
-    {
-        public override void Handle1()
-        {
-            Console.Write("ConcreteStateB handles request1.");
-        }
-
-        public override void Handle2()
-        {
-            Console.WriteLine("ConcreteStateB handles request2.");
-            Console.WriteLine("ConcreteStateB wants to change the state of the context.");
-            this._context.TransitionTo(new ConcreteStateA());
-        }
+    
+    class Lieutenant: Position {
+        public Lieutenant() => order = 3;
+        public override void HandleChevron() => Console.WriteLine("Handling lieutenant chevron: <o|  oo|\n");
+    }
+    
+    class Major: Position {
+        public Major() => order = 4;
+        public override void HandleChevron() => Console.WriteLine("Handling major chevron: <o|   o||\n");
+    }
+    
+    class Colonel: Position {
+        public Colonel() => order = 5;
+        public override void HandleChevron() => Console.WriteLine("Handling colonel chevron: <o| ooo||\n");
+    }
+    
+    class General: Position {
+        public General() => order = 6;
+        public override void HandleChevron() => Console.WriteLine("Handling general chevron: <o|oooo%|\n");
     }
 }
