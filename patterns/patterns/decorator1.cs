@@ -1,118 +1,102 @@
 ﻿using System;
+using System.Threading;
 
 namespace patterns
 {
-    // Базовый интерфейс Компонента определяет поведение, которое изменяется
-    // декораторами.
-    public abstract class Component
-    {
-        public abstract string Operation();
+    public abstract class Patient {
+        protected string ptname;
+        protected int age;
+        protected string sex;
+        protected int hp = (new Random()).Next(1, 101);
+        public abstract void showInfo();
+        public abstract void goThroughCheckup();
+        
+        protected string dname;
+        protected string dlname;
     }
 
-    // Конкретные Компоненты предоставляют реализации поведения по умолчанию.
-    // Может быть несколько вариаций этих классов.
-    class ConcreteComponent : Component
-    {
-        public override string Operation()
-        {
-            return "ConcreteComponent";
+    public class VirtualPatient: Patient {
+        public VirtualPatient(string n, int a, string s) {
+            ptname = n;
+            age = a;
+            sex = s;
         }
-    }
+        public VirtualPatient(): this("John Doe", 20, "male") {}
 
-    // Базовый класс Декоратора следует тому же интерфейсу, что и другие
-    // компоненты. Основная цель этого класса - определить интерфейс обёртки для
-    // всех конкретных декораторов. Реализация кода обёртки по умолчанию может
-    // включать в себя  поле для хранения завёрнутого компонента и средства его
-    // инициализации.
-    abstract class Decorator : Component
-    {
-        protected Component _component;
-
-        public Decorator(Component component)
-        {
-            this._component = component;
+        public override void showInfo() {
+            Console.WriteLine("Going through the virtual database...");
+            Console.WriteLine($"\nName: {ptname}\nAge: {age}\nSex: {sex}\nHP: {hp}");
         }
 
-        public void SetComponent(Component component)
-        {
-            this._component = component;
-        }
-
-        // Декоратор делегирует всю работу обёрнутому компоненту.
-        public override string Operation()
-        {
-            if (this._component != null)
-            {
-                return this._component.Operation();
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-    }
-
-    // Конкретные Декораторы вызывают обёрнутый объект и изменяют его результат
-    // некоторым образом.
-    class ConcreteDecoratorA : Decorator
-    {
-        public ConcreteDecoratorA(Component comp) : base(comp)
-        {
-        }
-
-        // Декораторы могут вызывать родительскую реализацию операции, вместо
-        // того, чтобы вызвать обёрнутый объект напрямую. Такой подход упрощает
-        // расширение классов декораторов.
-        public override string Operation()
-        {
-            return $"ConcreteDecoratorA({base.Operation()})";
-        }
-    }
-
-    // Декораторы могут выполнять своё поведение до или после вызова обёрнутого
-    // объекта.
-    class ConcreteDecoratorB : Decorator
-    {
-        public ConcreteDecoratorB(Component comp) : base(comp)
-        {
-        }
-
-        public override string Operation()
-        {
-            return $"ConcreteDecoratorB({base.Operation()})";
+        public override void goThroughCheckup() {
+            Console.WriteLine("Going through virtual checkup...");
         }
     }
     
-    // public class Client
-    // {
-    //     // Клиентский код работает со всеми объектами, используя интерфейс
-    //     // Компонента. Таким образом, он остаётся независимым от конкретных
-    //     // классов компонентов, с которыми работает.
-    //     public void ClientCode(Component component)
-    //     {
-    //         Console.WriteLine("RESULT: " + component.Operation());
-    //     }
-    // }
-    //
-    // class Program
-    // {
-    //     static void Main(string[] args)
-    //     {
-    //         Client client = new Client();
-    //
-    //         var simple = new ConcreteComponent();
-    //         Console.WriteLine("Client: I get a simple component:");
-    //         client.ClientCode(simple);
-    //         Console.WriteLine();
-    //
-    //         // ...так и декорированные.
-    //         //
-    //         // Обратите внимание, что декораторы могут обёртывать не только
-    //         // простые компоненты, но и другие декораторы.
-    //         ConcreteDecoratorA decorator1 = new ConcreteDecoratorA(simple);
-    //         ConcreteDecoratorB decorator2 = new ConcreteDecoratorB(decorator1);
-    //         Console.WriteLine("Client: Now I've got a decorated component:");
-    //         client.ClientCode(decorator2);
-    //     }
-    // }
+    //Decorator
+    public abstract class Doctor: Patient {
+        private Patient pt;
+
+        protected Doctor() {
+            Thread.Sleep(100);
+            Random r = new Random();
+            dname = Globals.names[r.Next(Globals.names.Count)];
+            dlname = Globals.lastnames[r.Next(Globals.lastnames.Count)];
+        }
+        
+        public void includeInCheckup(Patient basept) => pt = basept;
+        
+        public override void showInfo() {
+            if (pt != null) pt.showInfo();
+        }
+
+        public override void goThroughCheckup() {
+            if (pt != null) pt.goThroughCheckup();
+        }
+    }
+
+    public class Orthopedist: Doctor {
+        public override void showInfo() {
+            base.showInfo();
+            Console.WriteLine($"The patient has to go to {dname} {dlname} (orthopedist).");
+        }
+        
+        public override void goThroughCheckup() {
+            base.goThroughCheckup();
+            if (hp >= 70)
+                Console.WriteLine("...you have an awesome posture!");
+            else 
+                Console.WriteLine("...you seem to have some problems with your posture...");
+        }
+    }
+    
+    public class Neuropathologist: Doctor {
+        public override void showInfo() {
+            base.showInfo();
+            Console.WriteLine($"The patient has to go to {dname} {dlname} (neuropathologist).");
+        }
+        
+        public override void goThroughCheckup() {
+            base.goThroughCheckup();
+            if (hp >= 50)
+                Console.WriteLine("...your nervous system is in great shape!");
+            else
+                Console.WriteLine("...you should see other doctors for your headaches! Here are some painkillers...");
+        }
+    }
+    
+    public class Otolaryngologist: Doctor {
+        public override void showInfo() {
+            base.showInfo();
+            Console.WriteLine($"The patient has to go to {dname} {dlname} (otolaryngologist).");
+        }
+        
+        public override void goThroughCheckup() {
+            base.goThroughCheckup();
+            if (hp >= 20)
+                Console.WriteLine("...your respiratory tract and ears are healthy!");
+            else
+                Console.WriteLine("...there is some inflammation in your left ear...");
+        }
+    }
 }

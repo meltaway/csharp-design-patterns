@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace patterns
 {
@@ -17,6 +18,7 @@ namespace patterns
         }
         
         public virtual object HandleBread() {
+            Thread.Sleep(100);
             if (_nextHandler != null)
                 return _nextHandler.HandleBread();
             return null;
@@ -25,9 +27,9 @@ namespace patterns
 
     class WifeHandler: AbstractHandler {
         public override object HandleBread() {
-            int coin = (new Random()).Next(0, 2);
-            if (coin == 1) 
-                return "Wife: I bought the bread today.\n";
+            int coin = (new Random()).Next(0, 51);
+            if (coin >= 25) 
+                return "Wife: I bought the bread today, like always.\n";
             else Console.WriteLine($"   Wife: Somebody else is buying bread.");
             return base.HandleBread();
         }
@@ -35,9 +37,9 @@ namespace patterns
     
     class HusbandHandler: AbstractHandler {
         public override object HandleBread() {
-            int coin = (new Random()).Next(0, 2);
-            if (coin == 1) 
-                return "Husband: I bought the bread today.\n";
+            int coin = (new Random()).Next(0, 51);
+            if (coin >= 25) 
+                return "Husband: I bought the bread today. We don't have any money now.\n";
             else Console.WriteLine($"   Husband: Somebody else is buying bread.");
             return base.HandleBread();
         }
@@ -45,9 +47,9 @@ namespace patterns
     
     class SonHandler: AbstractHandler {
         public override object HandleBread() {
-            int coin = (new Random()).Next(0, 2);
-            if (coin == 1) 
-                return "Son: I bought the bread today.\n";
+            int coin = (new Random()).Next(0, 51);
+            if (coin >= 25) 
+                return "Son: I bought the bread today. The cashier yelled at me.\n";
             else Console.WriteLine($"   Son: Somebody else is buying bread.");
             return base.HandleBread();
         }
@@ -55,9 +57,9 @@ namespace patterns
     
     class DaughterHandler: AbstractHandler {
         public override object HandleBread() {
-            int coin = (new Random()).Next(0, 2);
-            if (coin == 1) 
-                return "Daughter: I bought the bread today.\n";
+            int coin = (new Random()).Next(0, 51);
+            if (coin >= 25) 
+                return "Daughter: I bought the bread today when I was coming home.\n";
             return "Daughter: I ordered the bread online today.\n";
         }
     }

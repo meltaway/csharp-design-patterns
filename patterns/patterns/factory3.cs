@@ -57,7 +57,7 @@ namespace patterns {
         }
 
         public void showInfo() {
-            Console.WriteLine($"\nSize: {size}\nColor: {color}\nModel: {model}\nIntegrity: {integrity}\n");
+            Console.WriteLine($"\nWomen's shoes\nSize: {size}\nColor: {color}\nModel: {model}\nIntegrity: {integrity}%\n");
         }
 
         public void Repair() {
@@ -104,7 +104,7 @@ namespace patterns {
         }
 
         public void showInfo() {
-            Console.WriteLine($"\nSize: {size}\nColor: {color}\nModel: {model}\nIntegrity: {integrity}\n");
+            Console.WriteLine($"\nMen's shoes\nSize: {size}\nColor: {color}\nModel: {model}\nIntegrity: {integrity}%\n");
         }
 
         public void Repair() {
@@ -150,7 +150,7 @@ namespace patterns {
         }
 
         public void showInfo() {
-            Console.WriteLine($"\nFoot Length: {footLength}\nColor: {color}\nPurpose: {purpose}\nIntegrity: {integrity}\n");
+            Console.WriteLine($"\nTrainers\nFoot Length: {footLength}\nColor: {color}\nPurpose: {purpose}\nIntegrity: {integrity}%\n");
         }
 
         public void Repair() {

@@ -1,9 +1,25 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace patterns {
     public class Client {
+        //decorator 1
+        public static void clientCodeDecorator() {
+            Patient p = new VirtualPatient();
+            Doctor doc1 = new Orthopedist();
+            Doctor doc2 = new Otolaryngologist();
+            Doctor doc3 = new Neuropathologist();
+
+            doc1.includeInCheckup(p);
+            doc2.includeInCheckup(doc1);
+            doc3.includeInCheckup(doc2);
+            
+            doc3.showInfo();
+            doc3.goThroughCheckup();
+        }
+        
         //proxy 2
         public void getBooks(ISubject subject) => subject.getBooks();
         public void getBookByTitle(ISubject subject) => subject.getBookByTitle();
@@ -96,40 +112,38 @@ namespace patterns {
                 }
             }
         }
-
+        
+        //chain 5
         public AbstractHandler formChain() {
             AbstractHandler wife = new WifeHandler();
             wife.SetNext(new HusbandHandler()).SetNext(new SonHandler()).SetNext(new DaughterHandler());
             return wife;
         }
         public void buyBread(AbstractHandler handler, int chainLength) {
-            for(int i = 0; i < chainLength; i++) {
-                Console.WriteLine($"Client: Who is buying bread today?");
-                var result = handler.HandleBread();
-                if (result != null) {
-                    Console.Write($"   {result}");
-                    break;
-                }
-                else {
-                    Console.WriteLine($"   Somebody else is buying bread.");
-                    break;
-                }
+            Console.WriteLine($"Client: Who is buying bread today?");
+            var result = handler.HandleBread();
+            if (result != null) {
+                Console.Write($"   {result}");
+                return;
+            }
+            else {
+                Console.WriteLine($"   Somebody else is buying bread.");
+                return;
             }
         }
         public static void clientCodeChain() {
             Client client = new Client();
             client.buyBread(client.formChain(), 4);
         }
-        
     }
     
     class Program {
         static void Main(string[] args) {
+            Client.clientCodeDecorator();
             //Client.clientCodeProxy();
             //Client.clientCodeFactory();
             //Client.clientCodeState();
-            // Client.clientCodeChain();
-            Client.clientCodeChain();
+            //Client.clientCodeChain();
         }
     }
 }
