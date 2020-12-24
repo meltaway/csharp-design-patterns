@@ -10,19 +10,59 @@ namespace patterns {
 
     class RealSubject : ISubject {
         public void getBooks() {
-            
+            Console.WriteLine("Here are all the books in our library:");
+            foreach (string b in Globals.books)
+                Console.WriteLine($"\"{b}\"");
+            Console.WriteLine();
         }
 
         public void getBookByTitle() {
-            
+            Console.Write("Please enter a book title: ");
+            string title = Console.ReadLine();
+            if (title.Length != 0) {
+                if (Globals.books.Contains(title))
+                    Console.WriteLine($"Book by title \"{title}\" found!");
+                else
+                    Console.WriteLine($"Book by title \"{title}\" not found!");
+            }
+            else
+                Console.WriteLine("Invalid input!");
+
+            Console.WriteLine();
         }
 
         public void takeBook() {
-            
+            Console.Write("Please enter a book title: ");
+            string title = Console.ReadLine();
+            if (title.Length != 0) {
+                if (Globals.books.Contains(title)) {
+                    Console.WriteLine($"Book by title \"{title}\" found! Taking...");
+                    Globals.books.Remove(title);
+                    Console.WriteLine("Taken!");
+                }
+                else
+                    Console.WriteLine($"Book by title \"{title}\" not found!");
+            }
+            else
+                Console.WriteLine("Invalid input!");
+            Console.WriteLine();
         }
 
         public void returnBook() {
-            
+            Console.Write("Please enter a book title: ");
+            string title = Console.ReadLine();
+            if (title.Length != 0) {
+                if (Globals.books.Contains(title))
+                    Console.WriteLine($"Book by title \"{title}\" found! Please keep it :)");
+                else {
+                    Console.WriteLine($"Book by title \"{title}\" not found! Returning...");
+                    Globals.books.Add(title);
+                    Console.WriteLine("Returned!");
+                }
+            }
+            else
+                Console.WriteLine("Invalid input!");
+            Console.WriteLine();
         }
     }
 
@@ -34,63 +74,76 @@ namespace patterns {
             _realSubject = realSubject;
         }
 
-        public void signIn() {
-            
+        public bool signIn() {
+            Console.Write("Please enter your login: ");
+            string l = Console.ReadLine();
+            if (l.Length != 0) {
+                if (Globals.logins.Contains(l)) {
+                    if (login != "")
+                        Console.WriteLine("You're already logged in!");
+                    else {
+                        Console.WriteLine("Great! You logged in!");
+                        login = l;
+                    }
+                    Console.WriteLine();
+                    return true;
+                }
+                Console.Write("Hm... It seems your login is not in our system. Register instead? [y/n]");
+                string answer = Console.ReadLine();
+                switch (answer.ToLower().Trim()) {
+                    case "y":
+                        register();
+                        return true;
+                    case "n":
+                        Console.WriteLine("Oh well, see you next time!");
+                        Console.WriteLine();
+                        return false;
+                    default:
+                        Console.WriteLine("Invalid input!");
+                        Console.WriteLine();
+                        return false;
+                }
+            }
+            else {
+                Console.WriteLine("Invalid input!\n");
+                return false;
+            }
         }
 
-        public void register() {
-            
+        public bool register() {
+            Console.Write("Please enter your new login: ");
+            string l = Console.ReadLine();
+            if (l.Length != 0) {
+                login = l;
+                Globals.logins.Add(l);
+                Console.WriteLine("Successfully registered!");
+                return true;
+            }
+            return false;
         }
         
         public void getBooks() {
-            if (CheckAccess(login)) {
+            if (CheckAccess(login)) 
                 _realSubject.getBooks();
-                LogAccess();
-            }
         }
 
         public void getBookByTitle() {
-            if (CheckAccess(login)) {
+            if (CheckAccess(login)) 
                 _realSubject.getBookByTitle();
-                LogAccess();
-            }
         }
 
         public void takeBook() {
-            if (CheckAccess(login)) {
+            if (CheckAccess(login)) 
                 _realSubject.takeBook();
-                LogAccess();
-            }
         }
 
         public void returnBook() {
-            if (CheckAccess(login)) {
+            if (CheckAccess(login))
                 _realSubject.returnBook();
-                LogAccess();
-            }
         }
 
         public bool CheckAccess(string login) {
-            Console.WriteLine("Proxy: Checking access prior to firing a real request.");
-
-            return true;
-        }
-        
-        public void LogAccess() {
-            Console.WriteLine("Proxy: Logging the time of request.");
+            return Globals.logins.Contains(login);
         }
     }
-    
-    public class Client
-    {
-        public void ClientCode(ISubject subject)
-        {
-            // ...
-            
-            subject.Request();
-            
-            // ...
-        }
-    }
-    
 }

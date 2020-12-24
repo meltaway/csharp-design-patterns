@@ -1,117 +1,176 @@
 ﻿using System;
 
-namespace patterns
-{
-    abstract class Factory
-    {
-        public abstract IProduct FactoryMethod();
-        
-        public string SomeOperation()
-        {
-            // Вызываем фабричный метод, чтобы получить объект-продукт.
-            var product = FactoryMethod();
-            // Далее, работаем с этим продуктом.
-            var result = "Factory: The same Factory's code has just worked with "
-                + product.Operation();
+namespace patterns {
+    public interface IProduct {
+        void showInfo();
+        void Repair();
+        void Wear();
+    }
+    
+    public abstract class Factory {
+        public abstract IProduct ProduceShoe();
 
+        public string Type() {
+            var product = ProduceShoe();
+            var result = "Factory: The same Factory's code has just worked with " + product.GetType();
             return result;
         }
     }
-
-    // Конкретные Создатели переопределяют фабричный метод для того, чтобы
-    // изменить тип результирующего продукта.
-    class wShoeFactory : Factory
-    {
-        // Обратите внимание, что сигнатура метода по-прежнему использует тип
-        // абстрактного продукта, хотя  фактически из метода возвращается
-        // конкретный продукт. Таким образом, Создатель может оставаться
-        // независимым от конкретных классов продуктов.
-        public override IProduct FactoryMethod()
-        {
+    
+    class wShoeFactory : Factory {
+        public override IProduct ProduceShoe() {
             return new wShoes();
         }
     }
 
-    class mShoeFactory : Factory
-    {
-        public override IProduct FactoryMethod()
-        {
+    class mShoeFactory : Factory {
+        public override IProduct ProduceShoe() {
             return new mShoes();
         }
     }
-    
-    class tShoeFactory : Factory
-    {
-        public override IProduct FactoryMethod()
-        {
+
+    class tShoeFactory : Factory {
+        public override IProduct ProduceShoe() {
             return new tShoes();
         }
     }
 
-    // Интерфейс Продукта объявляет операции, которые должны выполнять все
-    // конкретные продукты.
-    public interface IProduct
-    {
-        string Operation();
+    class wShoes : IProduct {
+        private int integrity = 100;
+        private string color;
+        private string model;
+        private int size;
+
+        public wShoes() {
+            color = "black";
+            model = "kitten heels";
+            size = 37;
+        }
+
+        public wShoes(string c, string m, int s) {
+            color = c;
+            model = m;
+            if (33 <= s && s <= 43)
+                size = s;
+            else
+                size = 37;
+        }
+
+        public void showInfo() {
+            Console.WriteLine($"\nSize: {size}\nColor: {color}\nModel: {model}\nIntegrity: {integrity}\n");
+        }
+
+        public void Repair() {
+            if (integrity < 100) {
+                Console.WriteLine("Repairing...");
+                integrity = 100;
+                Console.WriteLine("Repaired!");
+            }
+            else
+                Console.WriteLine("The shoes are brand new!");
+        }
+
+        public void Wear() {
+            if (integrity > 0) {
+                integrity--;
+                if (integrity == 0)
+                    Console.WriteLine("Oh no! The shoes ripped apart... You can't wear them anymore!");
+            }
+            else
+                Console.WriteLine("You can't wear ripped shoes!");
+        }
+
     }
 
-    // Конкретные Продукты предоставляют различные реализации интерфейса
-    // Продукта.
-    class wShoes : IProduct
-    {
-        public string Operation()
-        {
-            return "{Result of wShoes}";
+    class mShoes : IProduct {
+        private int integrity = 100;
+        private string color;
+        private string model;
+        private int size;
+
+        public mShoes() {
+            color = "black";
+            model = "oxfords";
+            size = 42;
+        }
+
+        public mShoes(string c, string m, int s) {
+            color = c;
+            model = m;
+            if (38 <= s && s <= 48)
+                size = s;
+            else
+                size = 42;
+        }
+
+        public void showInfo() {
+            Console.WriteLine($"\nSize: {size}\nColor: {color}\nModel: {model}\nIntegrity: {integrity}\n");
+        }
+
+        public void Repair() {
+            if (integrity < 100) {
+                Console.WriteLine("Repairing...");
+                integrity = 100;
+                Console.WriteLine("Repaired!");
+            }
+            else
+                Console.WriteLine("The shoes are brand new!");
+        }
+
+        public void Wear() {
+            if (integrity > 0) {
+                integrity--;
+                if (integrity == 0)
+                    Console.WriteLine("Oh no! The shoes ripped apart... You can't wear them anymore!");
+            }
+            else
+                Console.WriteLine("You can't wear ripped shoes!");
         }
     }
 
-    class mShoes : IProduct
-    {
-        public string Operation()
-        {
-            return "{Result of mShoes}";
-        }
-    }
-    
-    class tShoes : IProduct
-    {
-        public string Operation()
-        {
-            return "{Result of tShoes}";
-        }
-    }
+    class tShoes : IProduct {
+        private int integrity = 100;
+        private string color;
+        private string purpose;
+        private int footLength;
 
-    class Client
-    {
-        public void Main()
-        {
-            Console.WriteLine("App: Launched with the ConcreteCreator1.");
-            ClientCode(new ConcreteCreator1());
-            
-            Console.WriteLine("");
-
-            Console.WriteLine("App: Launched with the ConcreteCreator2.");
-            ClientCode(new ConcreteCreator2());
+        public tShoes() {
+            color = "black";
+            purpose = "running";
+            footLength = 27;
         }
 
-        // Клиентский код работает с экземпляром конкретного создателя, хотя и
-        // через его базовый интерфейс. Пока клиент продолжает работать с
-        // создателем через базовый интерфейс, вы можете передать ему любой
-        // подкласс создателя.
-        public void ClientCode(Factory Factory)
-        {
-            // ...
-            Console.WriteLine("Client: I'm not aware of the Factory's class," +
-                "but it still works.\n" + Factory.SomeOperation());
-            // ...
+        public tShoes(string c, string p, int s) {
+            color = c;
+            purpose = p;
+            if (20 <= s && s <= 32)
+                footLength = s;
+            else
+                footLength = 27;
         }
-    }
 
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            new Client().Main();
+        public void showInfo() {
+            Console.WriteLine($"\nFoot Length: {footLength}\nColor: {color}\nPurpose: {purpose}\nIntegrity: {integrity}\n");
+        }
+
+        public void Repair() {
+            if (integrity < 100) {
+                Console.WriteLine("Repairing...");
+                integrity = 100;
+                Console.WriteLine("Repaired!");
+            }
+            else
+                Console.WriteLine("The shoes are brand new!");
+        }
+
+        public void Wear() {
+            if (integrity > 0) {
+                integrity--;
+                if (integrity == 0)
+                    Console.WriteLine("Oh no! The shoes ripped apart... You can't wear them anymore!");
+            }
+            else
+                Console.WriteLine("You can't wear ripped shoes!");
         }
     }
 }
