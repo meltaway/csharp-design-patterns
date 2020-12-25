@@ -2,11 +2,10 @@
 
 namespace patterns
 {
-    class MilitaryContext {
-        private Position _state = null;
+    public class MilitaryContext {
+        private Position _state;
 
         public MilitaryContext(Position state) => TransitionTo(state);
- 
         public int Order => _state.Order;
         
         public void TransitionTo(Position state) {
@@ -43,7 +42,7 @@ namespace patterns
         public void ShowChevron() => _state.HandleChevron();
     }
 
-    abstract class Position {
+    public abstract class Position {
         protected MilitaryContext _context;
         protected int order;
         public int Order => order;
@@ -53,7 +52,7 @@ namespace patterns
         public abstract void HandleChevron();
     }
     
-    class Private: Position {
+    public class Private: Position {
         public Private() {
             order = 1;
             chevron = "<o|    |";
@@ -61,7 +60,7 @@ namespace patterns
         public override void HandleChevron() => Console.WriteLine($"Handling private chevron: {chevron}\n");
     }
 
-    class Sergeant: Position {
+    public class Sergeant: Position {
         public Sergeant() {
             order = 2;
             chevron = "<o| <<<|";
@@ -69,7 +68,7 @@ namespace patterns
         public override void HandleChevron() => Console.WriteLine($"Handling sergeant chevron: {chevron}\n");
     }
     
-    class Lieutenant: Position {
+    public class Lieutenant: Position {
         public Lieutenant() {
             order = 3;
             chevron = "<o|  oo|";
@@ -77,7 +76,7 @@ namespace patterns
         public override void HandleChevron() => Console.WriteLine($"Handling lieutenant chevron: {chevron}\n");
     }
     
-    class Major: Position {
+    public class Major: Position {
         public Major() {
             order = 4;
             chevron = "<o|   o||";
@@ -85,7 +84,7 @@ namespace patterns
         public override void HandleChevron() => Console.WriteLine($"Handling major chevron: {chevron}\n");
     }
     
-    class Colonel: Position {
+    public class Colonel: Position {
         public Colonel() {
             order = 5;
             chevron = "<o| ooo||";
@@ -93,7 +92,7 @@ namespace patterns
         public override void HandleChevron() => Console.WriteLine($"Handling colonel chevron: {chevron}\n");
     }
     
-    class General: Position {
+    public class General: Position {
         public General() {
             order = 6;
             chevron = "<o|oooo%|";

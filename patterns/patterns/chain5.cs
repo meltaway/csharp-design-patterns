@@ -6,7 +6,7 @@ namespace patterns
 {
     public interface IHandler {
         IHandler SetNext(IHandler handler);
-        object HandleBread();
+        string HandleBread();
     }
     
     public abstract class AbstractHandler: IHandler {
@@ -17,7 +17,7 @@ namespace patterns
             return handler;
         }
         
-        public virtual object HandleBread() {
+        public virtual string HandleBread() {
             Thread.Sleep(100);
             if (_nextHandler != null)
                 return _nextHandler.HandleBread();
@@ -26,7 +26,7 @@ namespace patterns
     }
 
     class WifeHandler: AbstractHandler {
-        public override object HandleBread() {
+        public override string HandleBread() {
             int coin = (new Random()).Next(0, 51);
             if (coin >= 25) 
                 return "Wife: I bought the bread today, like always.\n";
@@ -36,7 +36,7 @@ namespace patterns
     }
     
     class HusbandHandler: AbstractHandler {
-        public override object HandleBread() {
+        public override string HandleBread() {
             int coin = (new Random()).Next(0, 51);
             if (coin >= 25) 
                 return "Husband: I bought the bread today. We don't have any money now.\n";
@@ -46,7 +46,7 @@ namespace patterns
     }
     
     class SonHandler: AbstractHandler {
-        public override object HandleBread() {
+        public override string HandleBread() {
             int coin = (new Random()).Next(0, 51);
             if (coin >= 25) 
                 return "Son: I bought the bread today. The cashier yelled at me.\n";
@@ -56,12 +56,11 @@ namespace patterns
     }
     
     class DaughterHandler: AbstractHandler {
-        public override object HandleBread() {
+        public override string HandleBread() {
             int coin = (new Random()).Next(0, 51);
             if (coin >= 25) 
                 return "Daughter: I bought the bread today when I was coming home.\n";
             return "Daughter: I ordered the bread online today.\n";
         }
     }
-    
 }

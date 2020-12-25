@@ -3,6 +3,7 @@ using System.Threading;
 
 namespace patterns
 {
+    //Component
     public abstract class Patient {
         protected string ptname;
         protected int age;
@@ -14,7 +15,8 @@ namespace patterns
         protected string dname;
         protected string dlname;
     }
-
+    
+    //Concrete component
     public class VirtualPatient: Patient {
         public VirtualPatient(string n, int a, string s) {
             ptname = n;
@@ -24,7 +26,6 @@ namespace patterns
         public VirtualPatient(): this("John Doe", 20, "male") {}
 
         public override void showInfo() {
-            Console.WriteLine("Going through the virtual database...");
             Console.WriteLine($"\nName: {ptname}\nAge: {age}\nSex: {sex}\nHP: {hp}");
         }
 
@@ -55,6 +56,7 @@ namespace patterns
         }
     }
 
+    //Concrete decorators
     public class Orthopedist: Doctor {
         public override void showInfo() {
             base.showInfo();

@@ -1,14 +1,14 @@
 ﻿using System;
 
 namespace patterns {
-    public interface ISubject {
+    public interface IService {
         void getBooks();
         void getBookByTitle();
         void takeBook();
         void returnBook();
     }
 
-    class RealSubject : ISubject {
+    public class Service : IService {
         public void getBooks() {
             Console.WriteLine("Here are all the books in our library:");
             foreach (string b in Globals.books)
@@ -66,12 +66,12 @@ namespace patterns {
         }
     }
 
-    class Proxy : ISubject {
-        private RealSubject _realSubject;
+    public class Proxy : IService {
+        private Service _service;
         private string login = "";
         
-        public Proxy(RealSubject realSubject) {
-            _realSubject = realSubject;
+        public Proxy(Service service) {
+            _service = service;
         }
 
         public bool signIn() {
@@ -124,22 +124,22 @@ namespace patterns {
         
         public void getBooks() {
             if (CheckAccess(login)) 
-                _realSubject.getBooks();
+                _service.getBooks();
         }
 
         public void getBookByTitle() {
             if (CheckAccess(login)) 
-                _realSubject.getBookByTitle();
+                _service.getBookByTitle();
         }
 
         public void takeBook() {
             if (CheckAccess(login)) 
-                _realSubject.takeBook();
+                _service.takeBook();
         }
 
         public void returnBook() {
             if (CheckAccess(login))
-                _realSubject.returnBook();
+                _service.returnBook();
         }
 
         public bool CheckAccess(string login) {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace patterns {
     public interface IProduct {
@@ -9,43 +10,48 @@ namespace patterns {
     
     public abstract class Factory {
         public abstract IProduct ProduceShoe();
-
-        public string Type() {
-            var product = ProduceShoe();
-            var result = "Factory: The same Factory's code has just worked with " + product.GetType();
-            return result;
-        }
     }
     
-    class wShoeFactory : Factory {
+    public class wShoeFactory : Factory {
         public override IProduct ProduceShoe() {
-            return new wShoes();
+            Thread.Sleep(100);
+            Random r = new Random();
+            string color = Globals.colors[r.Next(Globals.colors.Count)];
+            string model = Globals.wmodels[r.Next(Globals.wmodels.Count)];
+            int size = r.Next(20, 51);
+            return new wShoes(color, model, size);
         }
     }
 
-    class mShoeFactory : Factory {
+    public class mShoeFactory : Factory {
         public override IProduct ProduceShoe() {
-            return new mShoes();
+            Thread.Sleep(100);
+            Random r = new Random();
+            string color = Globals.colors[r.Next(Globals.colors.Count)];
+            string model = Globals.mmodels[r.Next(Globals.mmodels.Count)];
+            int size = r.Next(20, 51);
+            return new mShoes(color, model, size);
         }
     }
 
-    class tShoeFactory : Factory {
+    public class tShoeFactory : Factory {
         public override IProduct ProduceShoe() {
-            return new tShoes();
+            Thread.Sleep(100);
+            Random r = new Random();
+            string color = Globals.colors[r.Next(Globals.colors.Count)];
+            string purpose = Globals.purposes[r.Next(Globals.purposes.Count)];
+            int size = r.Next(19, 51);
+            return new tShoes(color, purpose, size);
         }
     }
 
-    class wShoes : IProduct {
+    public class wShoes : IProduct {
         private int integrity = 100;
         private string color;
         private string model;
         private int size;
 
-        public wShoes() {
-            color = "black";
-            model = "kitten heels";
-            size = 37;
-        }
+        public wShoes(): this("black", "kitten heels", 37) {}
 
         public wShoes(string c, string m, int s) {
             color = c;
@@ -82,17 +88,13 @@ namespace patterns {
 
     }
 
-    class mShoes : IProduct {
+    public class mShoes : IProduct {
         private int integrity = 100;
         private string color;
         private string model;
         private int size;
 
-        public mShoes() {
-            color = "black";
-            model = "oxfords";
-            size = 42;
-        }
+        public mShoes(): this("black", "oxfords",42) {}
 
         public mShoes(string c, string m, int s) {
             color = c;
@@ -134,11 +136,7 @@ namespace patterns {
         private string purpose;
         private int footLength;
 
-        public tShoes() {
-            color = "black";
-            purpose = "running";
-            footLength = 27;
-        }
+        public tShoes(): this("black", "running", 27){}
 
         public tShoes(string c, string p, int s) {
             color = c;
